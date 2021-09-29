@@ -20,6 +20,7 @@ int				main(int argc, char **argv)
 	if (pid == -1)
 	{
 		write(1, "Fork failed\n", 12);
+		// returning 0 on failure ew!
 		return (0);
 	}
 	if (pid == 0)
