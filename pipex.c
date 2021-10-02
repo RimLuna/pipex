@@ -1,6 +1,13 @@
 #include "pipex.h"
 
 void
+bye (void)
+{
+	perror("Error");
+	exit(EXIT_FAILURE);
+}
+
+void
 usage (void)
 {
 	write(2, "Usage: ./pipex file1 cmd1 cmd2 file2\n", 37);
@@ -134,10 +141,65 @@ t_pipex	*pstruct;
 }
 
 void
+child(pstruct, p, envp)
+t_pipex	pstruct;
+int		*p;
+char	**envp;
+{
+	char	**cmd;
+
+	cmd = _strsplit(pstruct.cmd1, " ");
+	printf("haha %s %s\n", pstruct.cmd1, cmd[0], cmd[1]);
+	if (pstruct.fd1 == -1)
+		bye();
+	dup2(p[1], STDOUT_FILENO);
+	dup2(pstruct.fd1, STDIN_FILENO);
+	close(p[0]);
+	if (execve(pstruct.cmd1path, cmd, envp) == -1)
+		bye();
+}
+
+void
+parent(pstruct, p, envp)
+t_pipex	pstruct;
+int		*p;
+char	**envp;
+{
+	char	**cmd;
+
+	cmd = _strtok(pstruct.cmd1, " ");
+	printf("%s\n", cmd);
+	if (pstruct.fd2 == -1)
+		bye();
+	dup2(p[0], STDIN_FILENO);
+	dup2(pstruct.fd2, STDOUT_FILENO);
+	close(p[1]);
+	if (execve(pstruct.cmd2path, cmd, envp) == -1)
+		bye();
+}
+
+void
 pipex (pstruct)
 t_pipex	pstruct;
 {
-	// here
+	int		p[2];
+	pid_t	pid;
+
+	if (pipe(p) == -1)
+	{
+		_strerror("Error: \n", 7);
+		perror("pipe");
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		_strerror("Error: \n", 7);
+		perror("fork");
+	}
+	if (pid == 0)
+		child(pstruct);
+	waitpid(pid, NULL, 0);
+	parent(pstruct);
 }
 
 int
@@ -153,6 +215,4 @@ char	**envp;
 	getpstruct(av, envp, &pstruct);
 	printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
 	pipex(pstruct);
-	close(pstruct.fd1);
-	close(pstruct.fd2);
 }

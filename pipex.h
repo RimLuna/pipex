@@ -6,6 +6,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <sys/stat.h>
+# include<sys/wait.h>
 # define EMPTY_ARGS 2
 # define INVALID_ARGS 1
 # define COMMAND_NOT_FOUND 3
@@ -20,6 +21,7 @@ typedef	struct	s_pipex
 	char	*cmd2path;
 }				t_pipex;
 
+char	**_strsplit(char const *s, char c);
 char	*_strdup (const char *s);
 int		_strcmp(const char *s1, const char *s2);
 int		_strncmp(const char *s1, const char *s2, size_t n);
