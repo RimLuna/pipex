@@ -1,13 +1,13 @@
 #include "pipex.h"
 
 int
-_strncmp(s1, s2, n)
+_strncmp(s1, s2, len)
 const char	*s1;
 const char	*s2;
-size_t		n;
+size_t		len;
 {
   unsigned char u1, u2;
-  while (n-- > 0)
+  while (len-- > 0)
     {
       u1 = (unsigned char) *s1++;
       u2 = (unsigned char) *s2++;

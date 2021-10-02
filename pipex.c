@@ -133,6 +133,13 @@ t_pipex	*pstruct;
 	// printf("%s %s\n", pstruct->cmd1path, pstruct->cmd2path);
 }
 
+void
+pipex (pstruct)
+t_pipex	pstruct;
+{
+	// here
+}
+
 int
 main (ac, av, envp)
 int		ac;
@@ -145,7 +152,7 @@ char	**envp;
 	argcheck(ac, av);
 	getpstruct(av, envp, &pstruct);
 	printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
-	// pipex(pstruct);
+	pipex(pstruct);
 	close(pstruct.fd1);
 	close(pstruct.fd2);
 }
