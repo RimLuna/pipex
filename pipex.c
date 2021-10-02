@@ -106,6 +106,7 @@ t_pipex	*pstruct;
 		_strerror("Error: \n", 7);
 		_strerror(pstruct->cmd2,  _strlen(pstruct->cmd2));
 		_strerror(": command not found\n", 20);
+		exit(COMMAND_NOT_FOUND);
 	}
 }
 
@@ -127,9 +128,9 @@ t_pipex	*pstruct;
 	}
 	pstruct->cmd1 = _strdup(av[2]);
 	pstruct->cmd2 = _strdup(av[3]);
-	printf("%s %s\n", pstruct->cmd1, pstruct->cmd2);
+	// printf("%s %s\n", pstruct->cmd1, pstruct->cmd2);
 	getpaths(envp, pstruct);
-	printf("%s %s\n", pstruct->cmd1path, pstruct->cmd2path);
+	// printf("%s %s\n", pstruct->cmd1path, pstruct->cmd2path);
 }
 
 int
@@ -143,7 +144,7 @@ char	**envp;
 	pstruct = (t_pipex){0};
 	argcheck(ac, av);
 	getpstruct(av, envp, &pstruct);
-	printf("%s %s %d %d \n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2);
+	printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
 	// pipex(pstruct);
 	close(pstruct.fd1);
 	close(pstruct.fd2);

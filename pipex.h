@@ -8,6 +8,7 @@
 # include <sys/stat.h>
 # define EMPTY_ARGS 2
 # define INVALID_ARGS 1
+# define COMMAND_NOT_FOUND 3
 
 typedef	struct	s_pipex
 {
