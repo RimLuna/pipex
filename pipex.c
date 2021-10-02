@@ -1,22 +1,5 @@
 #include "pipex.h"
 
-char
-*_strdup (s)
-const char *s;
-{
-	char	*p;
-	char	*k;
-
-	p = (char *)malloc(sizeof(char));
-	if (p == (char*) 0)
-    	return (char*) 0;
-	k = p;
-	while(s && *s)
-		*p++ = *s++;
-	*p = '\0';
-	return (k);
-}
-
 void
 usage (void)
 {
@@ -58,6 +41,74 @@ t_pipex	*pstruct;
 		}
 }
 
+char
+*_getenv(env, name)
+char **env;
+const char *name;
+{
+	const char	*np;
+	char		**p;
+	char		*envptr;
+	int			len;
+	int			*offset;
+
+	np = name;
+	while (*np && *np != '=')
+		np++;
+	len = np - name;
+	p = env;
+	while ((envptr = *p) != NULL)
+	{
+		if (_strncmp(envptr, name, len) == 0 && envptr[len] == '=')
+		{
+			offset = (int *)(p - env);
+			return (_strdup(envptr + len + 1));
+		}
+		p++;
+	}
+	return (NULL);
+}
+
+void
+getpaths (envp, pstruct)
+char	**envp;
+t_pipex	*pstruct;
+{
+	char	**paths;
+	char	*path;
+	char	*cmd1path;
+	char	*cmd2path;
+	int		i;
+	struct stat statbuf;
+
+	paths = _strtok(_getenv(envp, "PATH"), ":");
+	i = -1;
+	while (paths && paths[++i])
+	{
+		path = paths[i];
+		path = _strjoin(path, "/");
+		cmd1path = _strjoin(path, pstruct->cmd1);
+		cmd2path = _strjoin(path, pstruct->cmd2);
+		// printf("%s %s %s %s\n", cmd1path, cmd2path, pstruct->cmd1, pstruct->cmd2);
+		if (stat(cmd1path, &statbuf) != -1)
+			pstruct->cmd1path = _strdup(cmd1path);
+		if (stat(cmd2path, &statbuf) != -1)
+			pstruct->cmd2path = _strdup(cmd2path);
+	}
+	if (pstruct->cmd1path == NULL)
+	{
+		_strerror("Error: \n", 7);
+		_strerror(pstruct->cmd1, _strlen(pstruct->cmd1));
+		_strerror(": command not found\n", 20);
+	}
+	if (pstruct->cmd2path == NULL)
+	{
+		_strerror("Error: \n", 7);
+		_strerror(pstruct->cmd2,  _strlen(pstruct->cmd2));
+		_strerror(": command not found\n", 20);
+	}
+}
+
 void
 getpstruct (av, envp, pstruct)
 char	**av;
@@ -76,6 +127,9 @@ t_pipex	*pstruct;
 	}
 	pstruct->cmd1 = _strdup(av[2]);
 	pstruct->cmd2 = _strdup(av[3]);
+	printf("%s %s\n", pstruct->cmd1, pstruct->cmd2);
+	getpaths(envp, pstruct);
+	printf("%s %s\n", pstruct->cmd1path, pstruct->cmd2path);
 }
 
 int
@@ -86,6 +140,7 @@ char	**envp;
 {
 	t_pipex	pstruct;
 
+	pstruct = (t_pipex){0};
 	argcheck(ac, av);
 	getpstruct(av, envp, &pstruct);
 	printf("%s %s %d %d \n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2);
