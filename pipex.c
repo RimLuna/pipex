@@ -30,10 +30,9 @@ int		_strlen;
 }
 
 void
-argcheck (ac, av, pstruct)
+argcheck (ac, av)
 int		ac;
 char	**av;
-t_pipex	*pstruct;
 {
 	int	i;
 
@@ -85,6 +84,8 @@ t_pipex	*pstruct;
 	char	*path;
 	char	*cmd1path;
 	char	*cmd2path;
+	char	**cmd1, **cmd2;
+	char	*base_cmd1, *base_cmd2;
 	int		i;
 	struct stat statbuf;
 
@@ -93,10 +94,16 @@ t_pipex	*pstruct;
 	while (paths && paths[++i])
 	{
 		path = paths[i];
-		path = _strjoin(path, "/");
-		cmd1path = _strjoin(path, pstruct->cmd1);
-		cmd2path = _strjoin(path, pstruct->cmd2);
-		// printf("%s %s %s %s\n", cmd1path, cmd2path, pstruct->cmd1, pstruct->cmd2);
+		// path = _strjoin(path, "/");
+		cmd1 = _split(pstruct->cmd1, ' ');
+		// printf("|%s| ,|%s|\n", cmd1[0], cmd1[1]);
+		cmd2 = _split(pstruct->cmd2, ' ');
+		// printf("|%s| ,|%s|\n", cmd2[0], cmd2[1]);
+		base_cmd1 = cmd1[0];
+		base_cmd2 = cmd2[0];
+		cmd1path = _strjoin(path, base_cmd1);
+		cmd2path = _strjoin(path, base_cmd2);
+		// printf("%s %s\n", cmd1path, cmd2path);
 		if (stat(cmd1path, &statbuf) != -1)
 			pstruct->cmd1path = _strdup(cmd1path);
 		if (stat(cmd2path, &statbuf) != -1)
@@ -148,58 +155,81 @@ char	**envp;
 {
 	char	**cmd;
 
-	cmd = _strsplit(pstruct.cmd1, " ");
-	printf("haha %s %s\n", pstruct.cmd1, cmd[0], cmd[1]);
+	// cmd = _split(pstruct.cmd1, " ");
+	cmd = _split(pstruct.cmd1, ' ');
+	// printf("haha %s %s %s\n", pstruct.cmd1, cmd[0], cmd[1]);
 	if (pstruct.fd1 == -1)
 		bye();
-	dup2(p[1], STDOUT_FILENO);
+	// printf("dup2 %d \n", pstruct.fd1);
 	dup2(pstruct.fd1, STDIN_FILENO);
+	dup2(p[1], STDOUT_FILENO);
 	close(p[0]);
+	close(pstruct.fd1);
+	// printf("executing %s \n", pstruct.cmd1);
 	if (execve(pstruct.cmd1path, cmd, envp) == -1)
 		bye();
+	exit(EXIT_SUCCESS);
 }
 
 void
-parent(pstruct, p, envp)
+child1(pstruct, p, envp)
 t_pipex	pstruct;
 int		*p;
 char	**envp;
 {
 	char	**cmd;
+	int		status;
 
-	cmd = _strtok(pstruct.cmd1, " ");
-	printf("%s\n", cmd);
+	// waitpid(-1, &status, 0);
+	cmd = _split(pstruct.cmd2, ' ');
 	if (pstruct.fd2 == -1)
 		bye();
-	dup2(p[0], STDIN_FILENO);
+	// printf("%s\n", cmd);
 	dup2(pstruct.fd2, STDOUT_FILENO);
+	// close(STDIN_FILENO);
+	dup2(p[0], STDIN_FILENO);
 	close(p[1]);
+	close(pstruct.fd2);
+	// printf("executing %s %s %s\n", pstruct.cmd2, cmd[0], cmd[1]);
 	if (execve(pstruct.cmd2path, cmd, envp) == -1)
 		bye();
+	// printf("success\n");
+	exit(EXIT_SUCCESS);
 }
 
 void
-pipex (pstruct)
+pipex (pstruct, envp)
 t_pipex	pstruct;
+char	**envp;
 {
 	int		p[2];
-	pid_t	pid;
+	pid_t	pid1;
+	pid_t	pid2;
+	int   status;
 
 	if (pipe(p) == -1)
 	{
 		_strerror("Error: \n", 7);
 		perror("pipe");
 	}
-	pid = fork();
-	if (pid == -1)
+	pid1 = fork();
+	if (pid1 == -1)
 	{
 		_strerror("Error: \n", 7);
 		perror("fork");
 	}
-	if (pid == 0)
-		child(pstruct);
-	waitpid(pid, NULL, 0);
-	parent(pstruct);
+	if (pid1 == 0)
+		child(pstruct, p, envp);
+	pid2 = fork();
+	if (pid2 == -1)
+	{
+		_strerror("Error: \n", 7);
+		perror("fork");
+	}
+	if (pid2 == 0)
+		child1(pstruct, p, envp);
+	waitpid(pid1, &status, 0);
+    // waitpid(pid2, &status, 0);
 }
 
 int
@@ -214,5 +244,7 @@ char	**envp;
 	argcheck(ac, av);
 	getpstruct(av, envp, &pstruct);
 	printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
-	pipex(pstruct);
+	pipex(pstruct, envp);
+	// close(pstruct.fd1);
+	// close(pstruct.fd2);
 }
