@@ -48,7 +48,6 @@ char	**envp;
 	if (execve(pstruct.cmd2path, cmd, envp) < 0)
 	{
 		dcmd(cmd);
-		printf("all: %s %s %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.cmd1path, pstruct.cmd2path);
 		bye(&pstruct, NULL);
 	}
 	dcmd(cmd);
