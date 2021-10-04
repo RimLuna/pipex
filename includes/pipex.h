@@ -22,7 +22,7 @@ typedef	struct	s_pipex
 }				t_pipex;
 
 char	**_split(char const *s, char c);
-char	*_strdup (const char *s);
+char	*_strdup(const char *s);
 int		_strcmp(const char *s1, const char *s2);
 int		_strncmp(const char *s1, const char *s2, size_t n);
 char	*_strjoin(char *s1, char *s2);
@@ -31,7 +31,16 @@ void	*_memset(void *b, int c, size_t len);
 void	_bzero(void *s, size_t n);
 char	*_strnew(size_t size);
 void	*_memalloc(size_t size);
-char	**_strtok(char *s, char *delim);
+void	bye(t_pipex *pstruct, char *p);
+void	usage(void);
+void	usagecode(int code);
+void	_strerror(char *msg, int _strlen);
+void	dcmd(char **cmd);
+void	dstruct(t_pipex *pstruct);
+void	argcheck (int ac, char **av);
+char	*_getenv(char **env, const char *name);
+void	getpaths (char **envp, t_pipex *pstruct);
+void	getpstruct (char **av, char **envp, t_pipex *pstruct);
 void	pipex(t_pipex pstruct, char **envp);
-
+int		main (int ac, char **av, char **envp);
 #endif
