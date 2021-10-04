@@ -7,9 +7,9 @@ const char *s;
 	char	*p;
 	char	*k;
 
-	p = (char *)malloc(_strlen(s) * sizeof(char));
-	if (p == (char*) 0)
-    	return (char*) 0;
+	p = (char *)malloc((_strlen(s) + 1) * sizeof(char));
+	if (!p)
+    	return (NULL);
 	k = p;
 	while(s && *s)
 		*p++ = *s++;
