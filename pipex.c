@@ -94,7 +94,8 @@ t_pipex	*pstruct;
 	while (paths && paths[++i])
 	{
 		path = paths[i];
-		// path = _strjoin(path, "/");
+		if (path[_strlen(path) - 2 != '/'])
+			path = _strjoin(path, "/");
 		cmd1 = _split(pstruct->cmd1, ' ');
 		// printf("|%s| ,|%s|\n", cmd1[0], cmd1[1]);
 		cmd2 = _split(pstruct->cmd2, ' ');
@@ -243,7 +244,7 @@ char	**envp;
 	pstruct = (t_pipex){0};
 	argcheck(ac, av);
 	getpstruct(av, envp, &pstruct);
-	printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
+	// printf("%s %s %d %d %s %s\n", pstruct.cmd1, pstruct.cmd2, pstruct.fd1, pstruct.fd2, pstruct.cmd1path, pstruct.cmd2path);
 	pipex(pstruct, envp);
 	// close(pstruct.fd1);
 	// close(pstruct.fd2);
