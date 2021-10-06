@@ -12,8 +12,20 @@
 
 #include "pipex.h"
 
+void	getornotpath(char **envp, t_pipex *pstruct)
+{
+	struct stat	statbuf;
+
+	if (stat(pstruct->cmd1, &statbuf) != -1)
+		pstruct->cmd1path = pstruct->cmd1;
+	else
+		getpaths(envp, pstruct);
+}
+
 void	getpstruct(char **av, char **envp, t_pipex *pstruct)
 {
+	struct stat	statbuf;
+
 	pstruct->fd1 = open(av[1], O_RDONLY);
 	if (pstruct->fd1 < 0)
 	{
@@ -33,5 +45,5 @@ void	getpstruct(char **av, char **envp, t_pipex *pstruct)
 	pstruct->cmd2 = _strdup(av[3]);
 	if (!pstruct->cmd2)
 		bye(pstruct, pstruct->cmd1, 0);
-	getpaths(envp, pstruct);
+	getornotpath(envp, pstruct);
 }
