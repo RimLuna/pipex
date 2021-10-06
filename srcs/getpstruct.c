@@ -15,13 +15,13 @@ t_pipex	*pstruct;
 	{
 		_strerror("Error: \n", 7);
 		perror(av[4]);
-		bye(pstruct, NULL);
+		bye(pstruct, NULL, 0);
 	}
 	pstruct->cmd1 = _strdup(av[2]);
 	if (!pstruct->cmd1)
-		bye(pstruct, NULL);
+		bye(pstruct, NULL, 0);
 	pstruct->cmd2 = _strdup(av[3]);
 	if (!pstruct->cmd2)
-		bye(pstruct, pstruct->cmd1);
+		bye(pstruct, pstruct->cmd1, 0);
 	getpaths(envp, pstruct);
 }

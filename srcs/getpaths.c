@@ -1,50 +1,63 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   getpaths.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/06 10:22:35 by rbougssi          #+#    #+#             */
+/*   Updated: 2021/10/06 10:48:26 by rbougssi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-void
-pathmdlwr (cmd1path, cmd2path, pstruct, pathsi)
-char	**cmd1path;
-char	**cmd2path;
-t_pipex	*pstruct;
-char	**pathsi;
+void	pathmdlwr(char **c1p, char **c2p, t_pipex *ps, char **pi)
 {
 	char	*path;
-	char	**cmd1, **cmd2;
+	char	**cmd;
 	char	*slashpath;
-	char	*base_cmd1, *base_cmd2;
+	char	*base_cmd1;
+	char	*base_cmd2;
 
-	path = _strdup(*pathsi);
-	free(*pathsi);
-	if (path[_strlen(path) - 2 != '/'])
+	path = _strdup(*pi);
+	free(*pi);
+	if (path[_strlen(path)] != '/')
 		slashpath = _strjoin(path, "/");
-	cmd1 = _split(pstruct->cmd1, ' ');
-	cmd2 = _split(pstruct->cmd2, ' ');
-	base_cmd1 = _strdup(cmd1[0]);
-	dcmd(cmd1);
-	base_cmd2 = _strdup(cmd2[0]);
-	dcmd(cmd2);
-	*cmd1path = _strjoin(slashpath, base_cmd1);
-	*cmd2path = _strjoin(slashpath, base_cmd2);
+	cmd = _split(ps->cmd1, ' ');
+	base_cmd1 = _strdup(cmd[0]);
+	dcmd(cmd);
+	cmd = _split(ps->cmd2, ' ');
+	base_cmd2 = _strdup(cmd[0]);
+	dcmd(cmd);
+	*c1p = _strjoin(slashpath, base_cmd1);
+	*c2p = _strjoin(slashpath, base_cmd2);
 	free(base_cmd1);
 	free(base_cmd2);
 	free(path);
 	free(slashpath);
 }
 
-void
-getpaths (envp, pstruct)
-char	**envp;
-t_pipex	*pstruct;
+char	**pathnorminette(char **envp)
 {
-	int		i;
-	struct stat statbuf;
-	char	*pathenv;
-	char	**paths;
-	char	*cmd1path;
-	char	*cmd2path;
+	char		*pathenv;
+	char		**paths;
 
-	pathenv = _getenv(envp, "PATH"),
+	pathenv = _getenv(envp, "PATH");
 	paths = _split(pathenv, ':');
 	free(pathenv);
+	return (paths);
+}
+
+void	getpaths(char **envp, t_pipex *pstruct)
+{
+	int			i;
+	struct stat	statbuf;
+	char		**paths;
+	char		*cmd1path;
+	char		*cmd2path;
+
+	paths = pathnorminette(envp);
 	i = -1;
 	while (paths && paths[++i])
 	{
@@ -58,16 +71,10 @@ t_pipex	*pstruct;
 	}
 	free(paths);
 	if (pstruct->cmd1path == NULL)
-	{
-		_strerror("Error: \n", 7);
-		_strerror(pstruct->cmd1, _strlen(pstruct->cmd1));
-		_strerror(": command not found\n", 20);
-	}
+		cmd404(pstruct->cmd1);
 	if (pstruct->cmd2path == NULL)
 	{
-		_strerror("Error: \n", 7);
-		_strerror(pstruct->cmd2,  _strlen(pstruct->cmd2));
-		_strerror(": command not found\n", 20);
-		bye(pstruct, NULL);
+		cmd404(pstruct->cmd2);
+		bye(pstruct, NULL, 1);
 	}
 }
