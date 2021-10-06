@@ -12,7 +12,7 @@ char	**envp;
 	if (pstruct.fd1 == -1)
 	{
 		dcmd(cmd);
-		bye(&pstruct, NULL);
+		bye(&pstruct, NULL, 0);
 	}
 	dup2(pstruct.fd1, STDIN_FILENO);
 	dup2(p[1], STDOUT_FILENO);
@@ -21,7 +21,7 @@ char	**envp;
 	if (execve(pstruct.cmd1path, cmd, envp) < 0)
 	{
 		dcmd(cmd);
-		bye(&pstruct, NULL);
+		bye(&pstruct, NULL, 0);
 	}
 	dcmd(cmd);
 	exit(EXIT_SUCCESS);
@@ -39,7 +39,7 @@ char	**envp;
 	if (pstruct.fd2 == -1)
 	{
 		dcmd(cmd);
-		bye(&pstruct, NULL);
+		bye(&pstruct, NULL, 0);
 	}
 	dup2(pstruct.fd2, STDOUT_FILENO);
 	dup2(p[0], STDIN_FILENO);
@@ -48,7 +48,7 @@ char	**envp;
 	if (execve(pstruct.cmd2path, cmd, envp) < 0)
 	{
 		dcmd(cmd);
-		bye(&pstruct, NULL);
+		bye(&pstruct, NULL, 0);
 	}
 	dcmd(cmd);
 	exit(EXIT_SUCCESS);

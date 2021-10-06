@@ -6,7 +6,7 @@
 /*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 10:22:35 by rbougssi          #+#    #+#             */
-/*   Updated: 2021/10/06 10:48:26 by rbougssi         ###   ########.fr       */
+/*   Updated: 2021/10/06 11:07:09 by rbougssi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,18 @@ char	**pathnorminette(char **envp)
 	paths = _split(pathenv, ':');
 	free(pathenv);
 	return (paths);
+}
+
+char	*statpaths(char **cmdpath, struct stat	*statbuf)
+{
+	char	*pscmdpath;
+
+	if (stat(*cmdpath, statbuf) != -1)
+		pscmdpath = _strdup(*cmdpath);
+	else
+		pscmdpath = NULL;
+	free(*cmdpath);
+	return (pscmdpath);
 }
 
 void	getpaths(char **envp, t_pipex *pstruct)
