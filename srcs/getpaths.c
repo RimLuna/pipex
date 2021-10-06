@@ -6,7 +6,7 @@
 /*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 10:22:35 by rbougssi          #+#    #+#             */
-/*   Updated: 2021/10/06 11:07:09 by rbougssi         ###   ########.fr       */
+/*   Updated: 2021/10/06 11:36:28 by rbougssi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char	**pathnorminette(char **envp)
 	return (paths);
 }
 
-char	*statpaths(char **cmdpath, struct stat	*statbuf)
+char	*statpaths(char **cmdpath, struct stat *statbuf)
 {
 	char	*pscmdpath;
 
@@ -76,10 +76,9 @@ void	getpaths(char **envp, t_pipex *pstruct)
 		pathmdlwr(&cmd1path, &cmd2path, pstruct, &paths[i]);
 		if (stat(cmd1path, &statbuf) != -1)
 			pstruct->cmd1path = _strdup(cmd1path);
-		free(cmd1path);
 		if (stat(cmd2path, &statbuf) != -1)
 			pstruct->cmd2path = _strdup(cmd2path);
-		free(cmd2path);
+		dcmds(&cmd1path, &cmd2path);
 	}
 	free(paths);
 	if (pstruct->cmd1path == NULL)

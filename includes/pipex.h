@@ -6,7 +6,7 @@
 /*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/06 10:08:30 by rbougssi          #+#    #+#             */
-/*   Updated: 2021/10/06 10:52:13 by rbougssi         ###   ########.fr       */
+/*   Updated: 2021/10/06 11:36:05 by rbougssi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	usagecode(int code);
 void	_strerror(char *msg, int _strlen);
 void	cmd404(char *cmd);
 void	dcmd(char **cmd);
+void	dcmds(char **cmd1, char **cmd2);
 void	dstruct(t_pipex *pstruct);
 void	argcheck(int ac, char **av);
 char	*_getenv(char **env, const char *name);

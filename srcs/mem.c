@@ -1,20 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   mem.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/06 11:13:56 by rbougssi          #+#    #+#             */
+/*   Updated: 2021/10/06 11:35:11 by rbougssi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-void
-dcmd(cmd)
-char	**cmd;
+void	dcmds(char **cmd1, char **cmd2)
+{
+	if (*cmd1)
+		free(*cmd1);
+	if (*cmd2)
+		free(*cmd2);
+}
+
+void	dcmd(char **cmd)
 {
 	int	i;
 
 	i = -1;
-	while(cmd[++i])
+	while (cmd[++i])
 		free(cmd[i]);
 	free(cmd);
 }
 
-void
-dstruct(pstruct)
-t_pipex	*pstruct;
+void	dstruct(t_pipex *pstruct)
 {
 	if (pstruct->cmd1)
 		free(pstruct->cmd1);

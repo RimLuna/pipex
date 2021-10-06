@@ -1,10 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/06 11:28:28 by rbougssi          #+#    #+#             */
+/*   Updated: 2021/10/06 11:30:44 by rbougssi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-void
-child(pstruct, p, envp)
-t_pipex	pstruct;
-int		*p;
-char	**envp;
+void	child(t_pipex pstruct, int *p, char **envp)
 {
 	char	**cmd;
 
@@ -27,11 +35,7 @@ char	**envp;
 	exit(EXIT_SUCCESS);
 }
 
-void
-child1(pstruct, p, envp)
-t_pipex	pstruct;
-int		*p;
-char	**envp;
+void	child1(t_pipex pstruct, int *p, char **envp)
 {
 	char	**cmd;
 
@@ -54,27 +58,18 @@ char	**envp;
 	exit(EXIT_SUCCESS);
 }
 
-void
-pipex (pstruct, envp)
-t_pipex	pstruct;
-char	**envp;
+void	pipex(t_pipex pstruct, char **envp)
 {
 	int		p[2];
 	pid_t	pid1;
 	pid_t	pid2;
-	int   status;
+	int		status;
 
 	if (pipe(p) == -1)
-	{
-		_strerror("Error: \n", 7);
-		perror("pipe");
-	}
+		bye(NULL, NULL, 0);
 	pid1 = fork();
 	if (pid1 == -1)
-	{
-		_strerror("Error: \n", 7);
-		perror("fork");
-	}
+		bye(NULL, NULL, 0);
 	if (pid1 == 0)
 		child(pstruct, p, envp);
 	pid2 = fork();

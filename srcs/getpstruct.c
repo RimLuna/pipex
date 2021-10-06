@@ -1,17 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   getpstruct.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rbougssi <rbougssi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/06 11:13:03 by rbougssi          #+#    #+#             */
+/*   Updated: 2021/10/06 11:13:04 by rbougssi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
-void
-getpstruct (av, envp, pstruct)
-char	**av;
-char	**envp;
-t_pipex	*pstruct;
+void	getpstruct(char **av, char **envp, t_pipex *pstruct)
 {
-	if ((pstruct->fd1 = open(av[1], O_RDONLY)) < 0)
+	pstruct->fd1 = open(av[1], O_RDONLY);
+	if (pstruct->fd1 < 0)
 	{
 		_strerror("Error: \n", 7);
 		perror(av[1]);
 	}
-	if ((pstruct->fd2 = open(av[4], O_CREAT | O_RDWR | O_TRUNC, 0644)) < 0)
+	pstruct->fd2 = open(av[4], O_CREAT | O_RDWR | O_TRUNC, 0644);
+	if (pstruct->fd2 < 0)
 	{
 		_strerror("Error: \n", 7);
 		perror(av[4]);
