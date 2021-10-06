@@ -11,7 +11,7 @@ MAIN	=	srcs/main.c
 
 HEADER	=	-I./includes/
 
-CC 		=	clang
+CC 		=	gcc
 CFLAGS 	=	-Wall -Wextra -Werror -g
 
 .c.o:		%.o : %.c
